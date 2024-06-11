@@ -6,6 +6,6 @@ import com.bura.states.CreatePlayer
 object Game {
   val creator: List[Player] = CreatePlayer.create
 
-  val dealtCards: DealtCards = DealingCards(creator, CardDesk())
+  val dealtCards: DealtCards = DealingCards(creator, CardDesk())//
 
 }
