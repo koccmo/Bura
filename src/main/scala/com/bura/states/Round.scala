@@ -1,6 +1,6 @@
 package com.bura.states
 
-import com.bura.domain.{Card, CardDesk, Player}
+import com.bura.domain.{CardDesk, Player}
 import com.bura.services.{DealingCards, DealtCards}
 
 case class Round (players: List[Player], cardDesk: CardDesk) {
@@ -17,7 +17,7 @@ case class Round (players: List[Player], cardDesk: CardDesk) {
   }
 
 
-  val attackCards: List[Card] = PlayerAttack.attack(attackPlayer, cardDesk)
+//  val attackCards: List[Card] = PlayerAttack.attack(attackPlayer, cardDesk)
 
 
 
