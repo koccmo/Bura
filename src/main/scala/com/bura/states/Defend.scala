@@ -1,6 +1,7 @@
 package com.bura.states
 
 import com.bura.domain.{Card, CardDesk, Player, Suit}
+import com.bura.services.BeatDiscard
 
 import scala.io.StdIn.readLine
 
@@ -9,7 +10,7 @@ trait Defend {
     attackCard: List[Card],
     players: Player,
     cardDesk: CardDesk
-  ): List[Card]
+  ): BeatDiscard
 }
 
 object RobDefend extends Defend {
@@ -17,7 +18,7 @@ object RobDefend extends Defend {
     attackCard: List[Card],
     rob: Player,
     cardDesk: CardDesk
-  ): List[Card] = {
+  ): BeatDiscard = {
 
     val trumpSuit: Suit = cardDesk.trump.get.suit
 
@@ -111,54 +112,56 @@ object RobDefend extends Defend {
     //      else if (attackCardAmount == 1 && a)
     //    }
 
-    def bothOneTrump(): List[Card] =
-      if (attackCardsPoints == 0 && defTrumpsPointSum == 0 && defNoTrumpsPointSum == 21) defTrumpCards //take
-      else if (attackCardsPoints == 0 && defTrumpsPointSum == 0 && cardsDifferentSuit == 2) defTrumpCards //take
+    def bothOneTrump(): BeatDiscard =
+      if (attackCardsPoints == 0 && defTrumpsPointSum == 0 && defNoTrumpsPointSum == 21) BeatDiscard(rob, defTrumpCards, List.empty) //take
+      else if (attackCardsPoints == 0 && defTrumpsPointSum == 0 && cardsDifferentSuit == 2) BeatDiscard(rob, defTrumpCards, List.empty) //take
       else if (attackCardsPoints == 0 && defTrumpsPointSum == 0 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 3)
-        defNoTrumpsCards.drop(attackCardAmount) // drop
+        BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount)) // drop
       else if (attackCardsPoints == 0 && defTrumpsPointSum >= 2 && defTrumpsPointSum <= 4 && cardsDifferentSuit == 2)
-        defTrumpCards //take
+        BeatDiscard(rob, defTrumpCards, List.empty) //take
       else if (attackCardsPoints == 0 && defTrumpsPointSum >= 2 && defTrumpsPointSum <= 4 && cardsDifferentSuit == 3)
-        defNoTrumpsCards.drop(attackCardAmount) //drop
-      else if (attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum == 21) defTrumpCards //take
+        BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount))  //drop
+      else if (attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum == 21) BeatDiscard(rob, defTrumpCards, List.empty) //take
       else if (
         attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 2
-      ) defTrumpCards //take
+      ) BeatDiscard(rob, defTrumpCards, List.empty) //take
       else if (
         attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 3
-      ) defNoTrumpsCards.drop(attackCardAmount) //drop
+      ) BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount)) //drop
       //      else if (attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum == 0 && cardsDifferentSuit == 2) defTrumpCards //take
       //      else if (attackCardsPoints == 0 && defTrumpsPointSum <= 10 && defNoTrumpsPointSum == 0 && cardsDifferentSuit == 3) defTrumpCards //take
-      else if (attackCardsPoints >= 2 && defNoTrumpsPointSum == 21) defTrumpCards //take
-      else if (attackCardsPoints >= 2 && cardsDifferentSuit == 2) defTrumpCards //take
-      else if (attackCardsPoints >= 2 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 2) defTrumpCards //take
+      else if (attackCardsPoints >= 2 && defNoTrumpsPointSum == 21) BeatDiscard(rob, defTrumpCards, List.empty) //take
+      else if (attackCardsPoints >= 2 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 2) BeatDiscard(rob, defTrumpCards, List.empty) //take 1
+      else if (attackCardsPoints >= 2 && cardsDifferentSuit == 2) BeatDiscard(rob, defTrumpCards, List.empty) //take
+      //1
       else if (attackCardsPoints >= 2 && defNoTrumpsPointSum <= 15 && cardsDifferentSuit == 3)
-        defNoTrumpsCards.drop(attackCardAmount) //drop
-      else List.empty
+        BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount)) //drop
+      else BeatDiscard(rob, List.empty, List.empty) //need check
 
-    def bothTwoTrumps(): List[Card] = defTrumpCards
+    def bothTwoTrumps(): BeatDiscard = BeatDiscard(rob, defTrumpCards, List.empty)//need fix
 
-    def bothNoTrumps(): List[Card] =
-      if (attackCardAmount == 1 && cardsDifferentSuit == 3) defCard.filter(_.suit == attackCardSuit) // take
+    def bothNoTrumps(): BeatDiscard =
+      if (attackCardAmount == 1 && cardsDifferentSuit == 3)  BeatDiscard(rob, defCard.filter(_.suit == attackCardSuit), List.empty) // take
       else if (attackCardAmount == 1 && cardsDifferentSuit == 2)
-        defCard.filter(_.suit == attackCardSuit).drop(attackCardAmount) //take
-      else if (attackCardAmount == 2) defCard.filter(_.suit == attackCardSuit)
-      else defCard
+        BeatDiscard(rob, defCard.filter(_.suit == attackCardSuit).drop(attackCardAmount), List.empty) //take
+      else if (attackCardAmount == 2) BeatDiscard(rob, defCard.filter(_.suit == attackCardSuit), List.empty)// take - ?
+      else BeatDiscard(rob, defCard, List.empty) // need check!
 
-    def defenderHasTrumps(): List[Card] = {
-      def oneAtcOneTrumpDef(): List[Card] =
-        if (attackCardsPoints == 11 && cardsDifferentSuit == 3 && defNoTrumpsPointSum >= 20) defTrumpCards // take
+    def defenderHasTrumps(): BeatDiscard = {
+      def oneAtcOneTrumpDef(): BeatDiscard =
+        if (attackCardsPoints == 11 && cardsDifferentSuit == 3 && defNoTrumpsPointSum >= 20) BeatDiscard(rob, defTrumpCards, List.empty)  // take
         else if (attackCardsPoints == 10 && cardsDifferentSuit == 3 && defHasAttSuitAndCanBeat)
-          defNoTrumpsCards.filter(_.suit == attackCardSuit) //take
+          BeatDiscard(rob, defNoTrumpsCards.filter(_.suit == attackCardSuit), List.empty) //take
         else if (attackCardsPoints <= 4 && cardsDifferentSuit == 3 && defHasAttSuitAndCanBeat)
-          defNoTrumpsCards.filter(_.suit == attackCardSuit) //take
-        else defTrumpCards
+          BeatDiscard(rob, defNoTrumpsCards.filter(_.suit == attackCardSuit), List.empty) //take
+        else BeatDiscard(rob, defTrumpCards, List.empty) // need check!
 
-      def attackOneDefenderTwoTrump(): List[Card] =
-        if (defHasAttSuitAndCanBeat) defNoTrumpsCards // take
-        else defNoTrumpsCards                         //drop (!defHasAttSuitAndCanBeat)
+      def attackOneDefenderTwoTrump(): BeatDiscard =
+        if (attackCardsPoints >= 10) BeatDiscard(rob, defTrumpCards.drop(1), List.empty) // take
+//        else if (defHasAttSuitAndCanBeat) BeatDiscard(rob, List.empty, defNoTrumpsCards)
+        else BeatDiscard(rob, List.empty, defNoTrumpsCards )                        //drop (!defHasAttSuitAndCanBeat)
 
-      def attackTwoDefenderOneTrump(): List[Card] = {
+      def attackTwoDefenderOneTrump(): BeatDiscard = {
         val amountCanBeatNotTrump: Int = {
           val strengthOfSimpleDefCard = defNoTrumpsCards.map(_.rank.strength).sum
 
@@ -166,59 +169,59 @@ object RobDefend extends Defend {
         }
 
         if (cardsDifferentSuit == 3 && defHasAttSuitAndCanBeat)
-          defNoTrumpsCards.filter(_.suit == attackCardSuit) ++ defTrumpCards             // take
-        else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 4) defNoTrumpsCards // take
-        else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 3) defNoTrumpsCards // take
+          BeatDiscard(rob, defNoTrumpsCards.filter(_.suit == attackCardSuit) ++ defTrumpCards , List.empty)            // take
+        else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 4) BeatDiscard(rob, defNoTrumpsCards, List.empty) // take
+        else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 3) BeatDiscard(rob, defNoTrumpsCards, List.empty) // take
         else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 2)
-          defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength) // take
+          BeatDiscard(rob, defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength), List.empty) // take
         else if (cardsDifferentSuit == 2 && amountCanBeatNotTrump == 1)
-          defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength) // take
-        else defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength)                    //take
+          BeatDiscard(rob, defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength), List.empty) // take
+        else BeatDiscard(rob, defTrumpCards :+ defNoTrumpsCards.maxBy(_.rank.strength), List.empty)                    //take
       }
 
-      def attackTwoDefenderTwoTrump(): List[Card] =
+      def attackTwoDefenderTwoTrump(): BeatDiscard =
         if (getCardStrength(attackCard).count(_ < getCardStrength(defNoTrumpsCards).sum) >= 1)
-          defNoTrumpsCards :+ defTrumpCards.minBy(_.rank.strength) // take need fix
-        else defTrumpCards                                         // take
+          BeatDiscard(rob, defNoTrumpsCards :+ defTrumpCards.minBy(_.rank.strength), List.empty)     // take need fix
+        else BeatDiscard(rob, defTrumpCards , List.empty)                                            // take
 
       if (attackCardAmount == 1 && defTrumpCards.size == 1) oneAtcOneTrumpDef()
       else if (attackCardAmount == 1 && defTrumpCards.size == 2) attackOneDefenderTwoTrump()
       else if (attackCardAmount == 2 && defTrumpCards.size == 1) attackTwoDefenderOneTrump()
       else if (attackCardAmount == 2 && defTrumpCards.size == 2) attackTwoDefenderTwoTrump()
-      else defCard
+      else BeatDiscard(rob, defCard, List.empty)
     }
 
-    def getIfCanBeat(): List[Card] =
-      if (attackCardTrumps && attackCardAmount == 1 && defTrumpCards.size == 1) bothOneTrump()
+    def getIfCanBeat(): BeatDiscard =
+      if (attackCardTrumps && attackCardAmount == 1 && defTrumpCards.size == 1) bothOneTrump() // take off attackCardAmount == 1, make attackCardTrumps.size == 1
       else if (attackCardTrumps && attackCardAmount == 2 && defTrumpCards.size == 2) bothTwoTrumps()
       else if (!attackCardTrumps && defTrumpCards.isEmpty) bothNoTrumps()
       else defenderHasTrumps()
 
-    def cantBeat(): List[Card] = {
+    def cantBeat(): BeatDiscard = {
 
-      def oneAttack(): List[Card] =
+      def oneAttack(): BeatDiscard =
         if (!defHasTrump && cardsDifferentSuit == 3)
-          defCard.minByOption(_.rank.strength).map(List(_)).getOrElse(List.empty[Card])
+          BeatDiscard(rob, List.empty, defCard.minByOption(_.rank.strength).map(List(_)).getOrElse(List.empty[Card]))
         else if (!defHasTrump && cardsDifferentSuit == 2)
-          defCard.groupBy(_.suit).filter { case (_, cards) => cards.size == 1 }.toList.flatMap { case (_, cards) =>
+          BeatDiscard(rob, List.empty, defCard.groupBy(_.suit).filter { case (_, cards) => cards.size == 1 }.toList.flatMap { case (_, cards) =>
             cards
-          }
+          })
         else if (defHasTrump && cardsDifferentSuit == 3 && defNoTrumpsPointSum <= 14)
-          defNoTrumpsCards.drop(attackCardAmount)
+        BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount))
         else if (defHasTrump && cardsDifferentSuit == 2 && defTrumpsPointSum >= 10)
-          defNoTrumpsCards.drop(attackCardAmount)
-        else defCard.drop(2)
+        BeatDiscard(rob, List.empty, defNoTrumpsCards.drop(attackCardAmount))
+        else BeatDiscard(rob, List.empty, defCard.drop(2))
 
-      def twoAttack(): List[Card] =
-        if (!defHasTrump && cardsDifferentSuit == 3) defCard.drop(1)
-        else if (!defHasTrump && cardsDifferentSuit == 2) defNoTrumpsCards.sortBy(_.rank.strength).take(2)
-        else if (defHasTrump && defTrumpAmount == 2) defNoTrumpsCards :+ defTrumpCards.minBy(_.rank.strength)
-        else defNoTrumpsCards
+      def twoAttack(): BeatDiscard =
+        if (!defHasTrump && cardsDifferentSuit == 3) BeatDiscard(rob, List.empty, defCard.take(2))
+        else if (!defHasTrump && cardsDifferentSuit == 2) BeatDiscard(rob, List.empty, defNoTrumpsCards.sortBy(_.rank.strength).take(2))
+        else if (defHasTrump && defTrumpAmount == 2) BeatDiscard(rob, List.empty, defNoTrumpsCards :+ defTrumpCards.minBy(_.rank.strength))
+        else BeatDiscard(rob, List.empty, defNoTrumpsCards)
 
       attackCardAmount match {
         case 1 => oneAttack()
         case 2 => twoAttack()
-        case _ => defCard
+        case _ => BeatDiscard(rob, List.empty, defCard)
       }
     }
 
@@ -233,7 +236,7 @@ object PlayerDefend extends Defend {
     attackCard: List[Card],
     players: Player,
     cardDesk: CardDesk
-  ): List[Card] = {
+  ): BeatDiscard = {
     println(s"Attacked card - $attackCard")
     println(s"Your cards - ${players.hand}")
     println("Choose -> 1 = Beat, 2 = Drop")
@@ -248,6 +251,6 @@ object PlayerDefend extends Defend {
       case _   => defend(attackCard, players, cardDesk)
     }
 
-    List.empty[Card]
+    BeatDiscard(players, List.empty, List.empty)
   }
 }

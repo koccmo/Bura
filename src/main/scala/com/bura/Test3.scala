@@ -3,7 +3,7 @@ package com.bura
 import com.bura.domain.Rank._
 import com.bura.domain.Suit.{Clubs, Diamonds, Hearts}
 import com.bura.domain._
-import com.bura.services.{DealingCards, RobDefender}
+import com.bura.services.{BeatDiscard, DealingCards, RobDefender}
 import com.bura.states.{Attack, RobDefend}
 
 object Test3 extends App {
@@ -65,14 +65,14 @@ object Test3 extends App {
     case Some(person) => person
   }
 
-//  val attackedPlayersCards: List[Card] = Attack.attack(attackPlayer, dealtCards.cardDesk)
-  val defenderCards: List[Card] = RobDefend.defend(attackedCard, defender, dealtCards.cardDesk)
+  //  val attackedPlayersCards: List[Card] = Attack.attack(attackPlayer, dealtCards.cardDesk)
+  val defenderCards: BeatDiscard = RobDefend.defend(attackedCard, defender, dealtCards.cardDesk)
 
   println(s"Trump -> ${dealtCards.cardDesk.trump}")
-  println(s" Attacker Hands Cards -> ${attackPlayer}")
+  println(s" Attacker Hands Cards -> $attackPlayer")
   println(s" Defender Hands Cards -> ${defender.hand}")
   println(s"Attacker cards to Attack -> $attackedCard")
-  println(s"Defender cards to Defend -> $defenderCards")
+  println(s"Defender cards to Defend -> $defenderCards.")
   println(Attack.attack(robN, dealtCards.cardDesk))
 
 }

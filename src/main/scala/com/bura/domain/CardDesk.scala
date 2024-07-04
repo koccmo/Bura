@@ -8,12 +8,16 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
   val random = new Random()
 
   def doTrump: CardDesk = {
-    val newTrump = cards(random.nextInt(cards.size))
+    val newTrump:Card = cards(random.nextInt(cards.size))
     val remainingCards: List[Card] = cards.filter(_ != newTrump)
 
     CardDesk(remainingCards, Some(newTrump))
   }
 
+  def setTrump(trumpCard: Card): CardDesk = {
+    val remainingCards: List[Card] = cards.filter(_ != trumpCard)
+    CardDesk(remainingCards, Some(trumpCard))
+  }
 
 
   def get(amount: Int): List[Card] = {
