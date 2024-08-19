@@ -7,17 +7,17 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
 
   val random = new Random()
 
-  def doTrump: CardDesk = {
+  def setUpTrump: CardDesk = {
     val newTrump:Card = cards(random.nextInt(cards.size))
     val remainingCards: List[Card] = cards.filter(_ != newTrump)
 
     CardDesk(remainingCards, Some(newTrump))
   }
 
-  def setTrump(trumpCard: Card): CardDesk = {
-    val remainingCards: List[Card] = cards.filter(_ != trumpCard)
-    CardDesk(remainingCards, Some(trumpCard))
-  }
+//  def setTrump(trumpCard: Card): CardDesk = {
+//    val remainingCards: List[Card] = cards.filter(_ != trumpCard)
+//    CardDesk(remainingCards, Some(trumpCard))
+//  }
 
 
   def get(amount: Int): List[Card] = {
@@ -38,7 +38,7 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
           helper(upgradedList, amount - 1, newAcc)
       }
 
-    helper(cards, amount, List.empty[Card])
+    helper(cards, amount, List.empty[Card]) // need do in this method upgrade CardDesk
   }
 
   def upgrade(cardsToUpgrade: List[Card]): CardDesk = {

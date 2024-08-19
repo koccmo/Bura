@@ -49,8 +49,8 @@ object Test3 extends App {
   val dealtCards            = DealingCards(players, cardDeskN)
 
   val attackPlayer = dealtCards.players.collect {
-    case robot @ Robot(_, _, _, _, true) => robot
-    case human @ Human(_, _, _, _, true) => human
+    case robot @ Robot(_, _, _, _, _, true) => robot
+    case human @ Human(_, _, _, _, _, true) => human
   }
 
   val attackedCard = attackPlayer.flatMap {

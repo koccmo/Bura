@@ -1,26 +1,23 @@
 package com.bura.states
 
 import com.bura.domain.{CardDesk, Player}
-import com.bura.services.{DealingCards, DealtCards}
 
-case class Round (players: List[Player], cardDesk: CardDesk) {
-  println("Shuffle Cards")
+trait Round {
+  def attacker: Player
 
+  def defender: Player
 
-  val dealt: DealtCards = DealingCards(players, cardDesk)
-
-  println("Cards Dealt")
-
-
-  val attackPlayer: Player = dealt.players.find(_.attack) match {
-    case Some(person) => person
-  }
-
-
-//  val attackCards: List[Card] = PlayerAttack.attack(attackPlayer, cardDesk)
-
-
-
-
+  def cardDesk: CardDesk
 }
 
+case class RoundStart(
+  attacker: Player,
+  defender: Player,
+  cardDesk: CardDesk
+) extends Round
+
+case class RoundEnd(
+  attacker: Player,
+  defender: Player,
+  cardDesk: CardDesk
+) extends Round

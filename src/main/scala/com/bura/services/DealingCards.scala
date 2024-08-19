@@ -5,16 +5,16 @@ import com.bura.domain._
 import scala.annotation.tailrec
 import scala.util.Random
 
-trait DealingCards {
-
-  def apply(players: List[Player], cardDesk: CardDesk): DealtCards
-}
+//trait DealingCards {
+//
+//  def apply(players: List[Player], cardDesk: CardDesk): DealtCards
+//}
 
 object DealingCards {
 
       def apply(players: List[Player], cardDesk: CardDesk): DealtCards = {
 
-        val upgradedCardDesk = if (cardDesk.trump.isEmpty) cardDesk.doTrump else cardDesk
+        val upgradedCardDesk = if (cardDesk.trump.isEmpty) cardDesk.setUpTrump else cardDesk
 
         def deal(players: List[Player], cards: List[Card]): List[Player] = {
 

@@ -50,7 +50,7 @@ object Test extends App {
 
   println(List(Human("Alex"), Robot()).find(_.attack))
 
-  val newDesc = CardDesk().doTrump
+  val newDesc = CardDesk().setUpTrump
   println(newDesc.trump)
   println(newDesc.cards.size)
 
@@ -73,8 +73,8 @@ object Test extends App {
 
 
   val cardssss = List(Card(Ace, Hearts), Card(Ace, Diamonds), Card(Six, Spades))
-  val cardDesk = CardDesk().doTrump
-  val myRob = Robot(cardDesk.get(3))
+  val cardDesk = CardDesk().setUpTrump
+  val myRob = Robot().setHand(cardDesk.get(3))
   val upgradeCardDesc = cardDesk.upgrade(myRob.hand)
 
   println(myRob.hand)

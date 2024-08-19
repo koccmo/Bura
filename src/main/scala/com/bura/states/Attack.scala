@@ -82,7 +82,7 @@ object Attack {
     override def attack(human: Human, cardDesk: CardDesk): List[Card] = {
 
       println(
-        s"Your visible points = ${human.getPoints} -> Do you want carry on game choose - 1, if you want showdown choose - 2"
+        s"Your visible points = ${human.getTricksPoints} -> Do you want carry on game choose - 1, if you want showdown choose - 2"
       )
       val goStop = scala.io.StdIn.readLine() match {
         case "1" =>
