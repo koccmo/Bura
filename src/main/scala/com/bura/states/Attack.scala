@@ -1,9 +1,10 @@
 package com.bura.states
 
-import com.bura.domain.{Card, CardDesk, Human, Player, Robot, Suit}
+import com.bura.domain._
+import com.bura.services.Attacker
 
 trait Attack[T <: Player] {
-  def attack(player: T, cardDesk: CardDesk): List[Card]
+  def attack(player: T, cardDesk: CardDesk): Attacker
 }
 
 //object Attack {
@@ -17,14 +18,14 @@ trait Attack[T <: Player] {
 //  }
 //}
 object Attack {
-  def attack[T <: Player](player: T, cardDesk: CardDesk)(implicit attacked: Attack[T]): List[Card] =
+  def attack[T <: Player](player: T, cardDesk: CardDesk)(implicit attacked: Attack[T]): Attacker =
     attacked.attack(player, cardDesk)
 
   def apply[T <: Player](implicit attack: Attack[T]): Attack[T] = attack
 
   implicit object RobAttack extends Attack[Robot] {
 
-    override def attack(robot: Robot, cardDesk: CardDesk): List[Card] = {
+    override def attack(robot: Robot, cardDesk: CardDesk): Attacker = {
 
       val suitCardTuples: List[(Suit, List[Card])] = robot.hand.groupBy(_.suit).toList
       val cardsInPack: Int = cardDesk.cards.size
@@ -71,20 +72,19 @@ object Attack {
       }
 
 
-      if (amountTrump == 2) twoTrump(robot.hand)
+      val attackCards: List[Card] = if (amountTrump == 2) twoTrump(robot.hand)
       else if (amountDifferentSuits == 2) twoSuits()
       else getSmallestPointCard()
+
+      Attacker(robot, attackCards)
     }
   }
 
   implicit object PlayerAttack extends Attack[Human] {
 
-    override def attack(human: Human, cardDesk: CardDesk): List[Card] = {
+    override def attack(human: Human, cardDesk: CardDesk): Attacker = {
 
-      println(
-        s"Your visible points = ${human.getTricksPoints} -> Do you want carry on game choose - 1, if you want showdown choose - 2"
-      )
-      val goStop = scala.io.StdIn.readLine() match {
+      val goStop: List[Card] = scala.io.StdIn.readLine() match {
         case "1" =>
           println(s"Trump = ${cardDesk.trump}, choose cards to Attack - Nr 1(${human.hand.head}), Nr 2(${
             human
@@ -94,12 +94,14 @@ object Attack {
           val input: List[Int] = scala.io.StdIn.readLine().split("").toList.map(_.toInt)
 
           human.hand.zipWithIndex.collect { case (str, index) if input.contains(index + 1) => str }
-        case "2" => List.empty[Card]
-        case _ => attack(human, cardDesk)
+        case _ => List.empty[Card]
       }
 
-      goStop //fix this
+      Attacker(human, goStop)
+      //Todo remove fink about Do yo want ti coutined game in Player part!
     }
+
+
   }
 }
 

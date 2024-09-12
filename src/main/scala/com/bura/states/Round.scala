@@ -21,3 +21,4 @@ case class RoundEnd(
   defender: Player,
   cardDesk: CardDesk
 ) extends Round
+

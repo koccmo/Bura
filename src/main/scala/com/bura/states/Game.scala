@@ -6,9 +6,9 @@ import com.bura.services.BeatDiscard
 case class Game() {
   def apply(robot: Robot, human: Human, cardDesk: CardDesk): Game = {
 
-    println(s"Robot attack -> ${robot.attack}")
-    println(s"Human attack -> ${human.attack}")
-    println("---------------")
+//    println(s"Robot attack -> ${robot.attack}")
+//    println(s"Human attack -> ${human.attack}")
+//    println("---------------")
     //    val players: List[Player]      = List(robot, human)
     //    val dealtCards                 = DealingCards(players, cardDesk)
     //    val newCardDesk                = dealtCards.cardDesk
@@ -18,9 +18,9 @@ case class Game() {
     val dealtHuman: Human = human.setHand(humanCards)
     val dealtRobot: Robot = robot.setHand(robotCards)
     val upgradedCardDesk = cardDesk.upgrade(humanCards ++ robotCards)
-    println(s"DealtRobot attack -> ${dealtRobot.attack}")
-    println(s"DealtHuman attack -> ${dealtHuman.attack}")
-    println("")
+//    println(s"DealtRobot attack -> ${dealtRobot.attack}")
+//    println(s"DealtHuman attack -> ${dealtHuman.attack}")
+//    println("")
     val attackedCard: List[Card] = if (dealtRobot.attack) {
       val cards = Attack.attack(dealtRobot, upgradedCardDesk)
       println(s"Robot attack cards -> ${cards.mkString(", ")}")
@@ -28,15 +28,15 @@ case class Game() {
       cards
     } else {
       val cards = Attack.attack(dealtHuman, upgradedCardDesk)
-      println(s"${dealtHuman.name} attack cards -> $cards") // println need println after Trump!!!!
+      println(s"${dealtHuman.name} attack cards -> $cards") //Todo println need println after Trump!!!!
 
       cards
     }
 
     val attackerPlayer: Player = if (dealtRobot.attack) dealtRobot else dealtHuman
     val defendPlayer: Player = if (dealtHuman.attack) dealtRobot else dealtHuman
-    println(s"Attack player -> $attackerPlayer")
-    println(s"DefendPlayer -> $defendPlayer")
+//    println(s"Attack player -> $attackerPlayer")
+//    println(s"DefendPlayer -> $defendPlayer")
 
     val defends: BeatDiscard = if (!dealtRobot.attack) {
       RobDefend.defend(attackedCard, dealtRobot, upgradedCardDesk)
@@ -189,7 +189,7 @@ case class Game() {
           val newCardDesk: CardDesk = CardDesk().setUpTrump
 
           Game().apply(robot, human, newCardDesk)
-      }//need write +1 to player ho is win, before need create param in Players
+      }//Todo need write +1 to player ho is win, before need create param in Players
       case _ => this
     }
 
@@ -200,11 +200,11 @@ case class Game() {
 
       if (attackerPoints > defenderPoints) attacker match {
         case human: Human => Game().apply(Robot(attack = false), Human(name = human.name, attack = true), CardDesk().setUpTrump)
-        case _: Robot => Game().apply(Robot(), Human(name = human.name), CardDesk().setUpTrump) //need make each player gameWins: Int = 0
+        case _: Robot => Game().apply(Robot(), Human(name = human.name), CardDesk().setUpTrump) //Todo need make each player gameWins: Int = 0
       }
       else if (defenderPoints > attackerPoints) defender match {
         case human: Human => Game().apply(Robot(attack = false), Human(name = human.name, attack = true), CardDesk().setUpTrump)
-        case _: Robot => Game().apply(Robot(), Human(name = human.name), CardDesk().setUpTrump) //need make each player gameWins: Int = 0
+        case _: Robot => Game().apply(Robot(), Human(name = human.name), CardDesk().setUpTrump) //Todo need make each player gameWins: Int = 0
       }
       else Game().apply(Robot(), Human(human.name), CardDesk().setUpTrump)
     }
