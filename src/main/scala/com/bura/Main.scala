@@ -12,6 +12,7 @@ object Main {
     val human: Human = Human(name)
     val robot: Robot = Robot()
     val cardDesk: CardDesk = CardDesk().setUpTrump
+    println(s"TRUMP SUIT IS : ${cardDesk.trump.get.suit}")
     val game: Game = Game()
     game.apply(robot, human, cardDesk)
   }

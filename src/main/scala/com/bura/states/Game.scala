@@ -22,15 +22,15 @@ case class Game() {
 //    println(s"DealtHuman attack -> ${dealtHuman.attack}")
 //    println("")
     val attackedCard: List[Card] = if (dealtRobot.attack) {
-      val cards = Attack.attack(dealtRobot, upgradedCardDesk)
-      println(s"Robot attack cards -> ${cards.mkString(", ")}")
+      val attacker = Attack.attack(dealtRobot, upgradedCardDesk)
+      println(s"Robot attack cards -> ${attacker.cards.mkString(", ")}")
 
-      cards
+      attacker.cards
     } else {
-      val cards = Attack.attack(dealtHuman, upgradedCardDesk)
-      println(s"${dealtHuman.name} attack cards -> $cards") //Todo println need println after Trump!!!!
+      val attacker = Attack.attack(dealtHuman, upgradedCardDesk)
+      println(s"${dealtHuman.name} attack cards -> ${attacker.cards}")
 
-      cards
+      attacker.cards
     }
 
     val attackerPlayer: Player = if (dealtRobot.attack) dealtRobot else dealtHuman
@@ -173,6 +173,7 @@ case class Game() {
 
           Game().apply(robot, human, newCardDesk)
       }
+
       case Some(value) if !value => roundEnd.attacker match {
         case human: Human =>
           val robot: Robot = defendPlayer match {
@@ -190,6 +191,7 @@ case class Game() {
 
           Game().apply(robot, human, newCardDesk)
       }//Todo need write +1 to player ho is win, before need create param in Players
+
       case _ => this
     }
 

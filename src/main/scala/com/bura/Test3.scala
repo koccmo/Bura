@@ -3,8 +3,7 @@ package com.bura
 import com.bura.domain.Rank._
 import com.bura.domain.Suit.{Clubs, Diamonds, Hearts}
 import com.bura.domain._
-import com.bura.services.{BeatDiscard, DealingCards, RobDefender}
-import com.bura.states.{Attack, RobDefend}
+import com.bura.services.{DealingCards, RobDefender}
 
 object Test3 extends App {
 
@@ -53,10 +52,10 @@ object Test3 extends App {
     case human @ Human(_, _, _, _, _, true) => human
   }
 
-  val attackedCard = attackPlayer.flatMap {
-    case human: Human => Attack.attack(human, cardDesk)
-    case robot: Robot => Attack.attack(robot, cardDesk)
-  }
+//  val attackedCard = attackPlayer.flatMap {
+//    case human: Human => Attack.attack(human, cardDesk)
+//    case robot: Robot => Attack.attack(robot, cardDesk)
+//  }
 //  val attackedCard = attackPlayer.flatMap(x => Attack.attack(x, cardDesk))
 
 //  val answer = attackPlayer.foreach {Attack.attack(_, dealtCards.cardDesk)}
@@ -66,13 +65,13 @@ object Test3 extends App {
   }
 
   //  val attackedPlayersCards: List[Card] = Attack.attack(attackPlayer, dealtCards.cardDesk)
-  val defenderCards: BeatDiscard = RobDefend.defend(attackedCard, defender, dealtCards.cardDesk)
-
-  println(s"Trump -> ${dealtCards.cardDesk.trump}")
-  println(s" Attacker Hands Cards -> $attackPlayer")
-  println(s" Defender Hands Cards -> ${defender.hand}")
-  println(s"Attacker cards to Attack -> $attackedCard")
-  println(s"Defender cards to Defend -> $defenderCards.")
-  println(Attack.attack(robN, dealtCards.cardDesk))
+//  val defenderCards: BeatDiscard = RobDefend.defend(attackedCard, defender, dealtCards.cardDesk)
+//
+//  println(s"Trump -> ${dealtCards.cardDesk.trump}")
+//  println(s" Attacker Hands Cards -> $attackPlayer")
+//  println(s" Defender Hands Cards -> ${defender.hand}")
+//  println(s"Attacker cards to Attack -> $attackedCard")
+//  println(s"Defender cards to Defend -> $defenderCards.")
+//  println(Attack.attack(robN, dealtCards.cardDesk))
 
 }

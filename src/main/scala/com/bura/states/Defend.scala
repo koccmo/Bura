@@ -188,7 +188,6 @@ object PlayerDefend extends Defend {
     players: Player, // need change to player
     cardDesk: CardDesk
   ): BeatDiscard = {
-    println(s"Trump is : ${cardDesk.trump.getOrElse("None Trump")}")
     println(s"Your cards - ${players.hand.mkString(", ")}")
     println("Choose -> 1 = Beat, 2 = Drop")
     val input = readLine()

@@ -28,7 +28,6 @@ case class Human(
 
   def setPoints(amount: Int): Human = Human(name, hand, points + amount)
 
-
 }
 
 case class Robot(
@@ -41,7 +40,6 @@ case class Robot(
 ) extends Player {
 
   def setHand(cards: List[Card]): Robot = Robot(name, hand ++ cards, attack = this.attack)
-
 
   def setAttack(itAttack: Boolean): Robot = Robot(name, hand, points, tricks, hiddenTricks, itAttack)
 
