@@ -14,6 +14,6 @@ object Main {
     val cardDesk: CardDesk = CardDesk().setUpTrump
     println(s"TRUMP SUIT IS : ${cardDesk.trump.get.suit}")
     val game: Game = Game()
-    game.apply(robot, human, cardDesk)
+    game play (robot, human, cardDesk)
   }
 }

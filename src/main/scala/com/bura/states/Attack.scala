@@ -84,20 +84,30 @@ object Attack {
 
     override def attack(human: Human, cardDesk: CardDesk): Attacker = {
 
-      val goStop: List[Card] = scala.io.StdIn.readLine() match {
-        case "1" =>
-          println(s"Trump = ${cardDesk.trump}, choose cards to Attack - Nr 1(${human.hand.head}), Nr 2(${
-            human
-              .hand(1)
-          }), Nr 3(${human.hand(2)})")
+      println(s"Choose card to Attack = 1: ${human.hand.head} , 2: ${human.hand(1)}, 3: ${human.hand(2)}")
+      val attackCards: List[Card] = {
 
-          val input: List[Int] = scala.io.StdIn.readLine().split("").toList.map(_.toInt)
+        val chosenNumbers: List[Int] = scala.io.StdIn.readLine().filter(_.isDigit).map(_.asDigit - 1).toList
 
-          human.hand.zipWithIndex.collect { case (str, index) if input.contains(index + 1) => str }
-        case _ => List.empty[Card]
+        chosenNumbers
+          .filter(index => index >= 0 && index < human.hand.length)
+          .map(human.hand)
       }
+//      val goStop: List[Card] = scala.io.StdIn.readLine() match {
+//        case "1" =>
+//          println(s"Trump = ${cardDesk.trump}, choose cards to Attack - Nr 1(${human.hand.head}), Nr 2(${
+//            human
+//              .hand(1)
+//          }), Nr 3(${human.hand(2)})")
+//
+//          val input: List[Int] = scala.io.StdIn.readLine().split("").toList.map(_.toInt)
+//
+//          human.hand.zipWithIndex.collect { case (str, index) if input.contains(index + 1) => str }
+//        case _ => List.empty[Card]
+//      }
 
-      Attacker(human, goStop)
+
+      Attacker(human, attackCards)
       //Todo remove fink about Do yo want ti coutined game in Player part!
     }
 
