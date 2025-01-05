@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/Bura.iml" filepath="$PROJECT_DIR$/.idea/modules/Bura.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Bura-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Bura-build.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Bura.Bura-build.iml" filepath="$PROJECT_DIR$/.idea/modules/Bura.Bura-build.iml" />
     </modules>
   </component>
 </project>

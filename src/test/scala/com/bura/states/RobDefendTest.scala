@@ -3,6 +3,7 @@ package com.bura.states
 import com.bura.domain.Rank._
 import com.bura.domain.Suit.{Clubs, Diamonds, Hearts, Spades}
 import com.bura.domain.{Card, CardDesk, Robot}
+import com.bura.services.RobDefend
 import org.scalatest.funsuite.AnyFunSuite
 import org.scalatest.matchers.should.Matchers
 

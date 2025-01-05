@@ -38,7 +38,7 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
           helper(upgradedList, amount - 1, newAcc)
       }
 
-    helper(cards, amount, List.empty[Card]) // need do in this method upgrade CardDesk
+    helper(cards, amount, List.empty[Card]) //Todo need do in this method upgrade CardDesk
   }
 
   def upgrade(cardsToUpgrade: List[Card]): CardDesk = {
@@ -50,11 +50,11 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
 
 object CardDesk {
 
-  val ranks: List[Rank] = Rank.ValuesList
+  private val ranks: List[Rank] = Rank.ValuesList
 
-  val suits: List[Suit] = Suit.ValuesList
+  private val suits: List[Suit] = Suit.ValuesList
 
-  val card: List[(Rank, Suit)] = for {
+  private val card: List[(Rank, Suit)] = for {
     rank <- ranks
     suit <- suits
   } yield (rank, suit)
