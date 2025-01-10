@@ -1,7 +1,7 @@
 package com.bura.states
 
-import com.bura.domain.{CardDesk, Player, Round, RoundEnd, Winner}
-import com.bura.services.{RevealCards, Win}
+import com.bura.domain.{CardDesk, Player, Winner}
+import com.bura.services.{RevealCards, Round, RoundEnd, Win}
 
 trait Games {
   def apply(
@@ -38,10 +38,13 @@ object Games {
       val winner: Winner = win(roundEnd.attacker)
 
       if (winner.win)
-        Games(revealCards, round, win)(Player(1, roundEnd.attacker), Player(0, roundEnd.defender), new CardDesk())
+        Games(revealCards, round, win)(Player.upgrade(1, roundEnd.attacker), Player.upgrade(0, roundEnd.defender), new CardDesk())
       else Games(revealCards, round, win)(roundEnd.attacker, roundEnd.defender, newCardDesk)
 
-      if (newCardDesk.cards.length < roundEnd.attacker.needCard * 2) revealCards(roundEnd.attacker, roundEnd.defender)
+      if (newCardDesk.cards.length < roundEnd.attacker.needCard * 2) {
+        val (newAttacker, newDefender) = revealCards(attacker, defender)
+        Games(revealCards, round, win)(newAttacker, newDefender, new CardDesk())
+      }
       else Games(revealCards, round, win)(roundEnd.attacker, roundEnd.defender, roundEnd.cardDesk)
     }
   }

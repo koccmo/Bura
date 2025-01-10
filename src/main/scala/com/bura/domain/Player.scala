@@ -1,5 +1,7 @@
 package com.bura.domain
 
+import com.bura.services.PlayerUpdater
+
 trait Player {
   def name: String
   def wins: Int
@@ -12,7 +14,7 @@ trait Player {
 
   def getTricksPoints: Int = tricks.map(_.rank.points).sum
   def needCard: Int = Player.Quantity - hand.size
-  def trickValue: Int = tricks.map(_.rank.strength).sum
+  def trickValue: Int = tricks.map(_.rank.points).sum
   def allCardsValue: Int = (tricks ++ hiddenTricks).map(_.rank.strength).sum
 }
 
@@ -54,9 +56,7 @@ case class Robot(
 object Player {
   val Quantity: Int = 3
 
-  def apply(amount: Int, player: Player): Player =
-    player match {
-      case human: Human => Human(name = human.name, wins = human.wins + amount)
-      case robot: Robot => Robot(wins = robot.wins)
-    }
+  def upgrade(updater: PlayerUpdater, player: Player): Player = updater(player)
+
+  //Todo refactor name of param -> cttack!
 }

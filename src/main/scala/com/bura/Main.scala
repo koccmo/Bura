@@ -1,7 +1,8 @@
 package com.bura
 
 import com.bura.domain._
-import com.bura.states.Game
+import com.bura.services.{RevealCards, Round, Win}
+import com.bura.states.{Game, Games}
 
 object Main {
 
@@ -12,7 +13,10 @@ object Main {
     val human: Human       = Human(name)
     val robot: Robot       = Robot()
     val cardDesk: CardDesk = CardDesk().setUpTrump
-    val game: Game         = Game()
+    val revealCards: RevealCards = RevealCards()
+    val round: Round = Round()
+    val win: Win = Win()
+    val game: Games        = Games(revealCards, round, win)
 
     game(robot, human, cardDesk)
 
