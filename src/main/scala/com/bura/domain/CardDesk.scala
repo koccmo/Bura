@@ -11,7 +11,7 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
     val newTrump:Card = cards(random.nextInt(cards.size))
     val remainingCards: List[Card] = cards.filter(_ != newTrump)
 
-    CardDesk(remainingCards, Some(newTrump))
+    CardDesk(remainingCards, Some(newTrump)) //Todo need get Trump only Suit an card should left in cardDesk!
   }
 
 //  def setTrump(trumpCard: Card): CardDesk = {
@@ -38,7 +38,7 @@ case class CardDesk(cards: List[Card] = CardDesk.cardsList, trump: Option[Card] 
           helper(upgradedList, amount - 1, newAcc)
       }
 
-    helper(cards, amount, List.empty[Card]) // need do in this method upgrade CardDesk
+    helper(cards, amount, List.empty[Card]) //Todo Need do in this method upgrade CardDesk
   }
 
   def upgrade(cardsToUpgrade: List[Card]): CardDesk = {

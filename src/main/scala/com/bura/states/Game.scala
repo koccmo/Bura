@@ -59,24 +59,26 @@ case class Game() {
           Human(
             human.name,
             human.hand.diff(defends.defendCards), //Todo there should be rest cards
-            human.points,
+            human.points + defends.player.getTricksPoints,
             human.tricks ++ attackedCard ++ defends.defendCards,
-            human.hiddenTricks,
+            human.hiddenTricks ++ defends.player.hiddenTricks,
             true
           )
         case robot: Robot =>
           Robot(
             robot.name,
             robotCards.diff(defends.defendCards),
-            robot.points,
+            robot.points + defends.player.getTricksPoints,
             robot.tricks ++ attackedCard ++ defends.defendCards,
-            robot.hiddenTricks
+            robot.hiddenTricks ++ defends.player.hiddenTricks
           )
       }
 
       val newDefender: Player = attackerPlayer match {
-        case human: Human => Human(human.name, human.hand.diff(attackedCard), human.points, human.tricks, human.hiddenTricks)
-        case robot: Robot => Robot(robot.name, robot.hand.diff(attackedCard), robot.points, robot.tricks, robot.hiddenTricks, false)
+        case human: Human =>
+          Human(human.name, human.hand.diff(attackedCard), human.points, human.tricks, human.hiddenTricks)
+        case robot: Robot =>
+          Robot(robot.name, robot.hand.diff(attackedCard), robot.points, robot.tricks, robot.hiddenTricks, false)
       }
 
       RoundEnd(newAttacker, newDefender, upgradedCardDesk)
@@ -86,7 +88,7 @@ case class Game() {
           Human(
             human.name,
             human.hand.diff(attackedCard),
-            human.points,
+            human.points + defends.player.getTricksPoints,
             human.tricks ++ attackedCard,
             human.hiddenTricks ++ defends.hiddenDiscard,
             true
@@ -95,15 +97,30 @@ case class Game() {
           Robot(
             robot.name,
             robot.hand.diff(attackedCard),
-            robot.points,
+            robot.points + defends.player.getTricksPoints,
             robot.tricks ++ attackedCard,
             robot.hiddenTricks ++ defends.hiddenDiscard
           )
       }
 
       val newDefender: Player = defends.player match {
-        case human: Human => Human(human.name, human.hand.diff(defends.defendCards), human.points, human.tricks, human.hiddenTricks)
-        case robot: Robot => Robot(robot.name, robot.hand.diff(defends.defendCards), robot.points, robot.tricks, robot.hiddenTricks, false)
+        case human: Human =>
+          Human(
+            human.name,
+            human.hand.diff(defends.defendCards),
+            human.points + defends.player.getTricksPoints,
+            human.tricks ++ defends.player.tricks,
+            human.hiddenTricks ++ defends.player.hiddenTricks
+          )
+        case robot: Robot =>
+          Robot(
+            robot.name,
+            robot.hand.diff(defends.defendCards),
+            robot.points + defends.player.getTricksPoints,
+            robot.tricks ++ defends.player.tricks,
+            robot.hiddenTricks ++ defends.player.hiddenTricks,
+            false
+          )
       }
 
       RoundEnd(newAttacker, newDefender, upgradedCardDesk)
@@ -129,8 +146,22 @@ case class Game() {
       }
 
       val newDefender: Player = defends.player match {
-        case human: Human => Human(human.name, human.hand.diff(defends.defendCards), human.points, human.tricks, human.hiddenTricks)
-        case robot: Robot => Robot(robot.name, robot.hand.diff(defends.defendCards), robot.points, robot.tricks, robot.hiddenTricks, false)
+        case human: Human =>
+          Human(
+            human.name,
+            human.hand.diff(defends.defendCards),
+            human.points + defends.player.getTricksPoints,
+            human.tricks ++ defends.player.tricks,
+            human.hiddenTricks ++ defends.player.hiddenTricks
+          )
+        case robot: Robot =>
+          Robot(
+            robot.name,
+            robot.hand.diff(defends.defendCards),
+            robot.points + defends.player.getTricksPoints,
+            robot.tricks ++ defends.player.tricks,
+            robot.hiddenTricks ++ defends.player.hiddenTricks,
+            false)
       }
 
       RoundEnd(newAttacker, newDefender, upgradedCardDesk)
@@ -229,22 +260,25 @@ case class Game() {
     }
 
     println(s"${roundEnd.attacker} -> attacker")
+    println(s"Attacker points ${roundEnd.attacker.getTricksPoints}")
     println(s"${roundEnd.defender} -> defender")
-    println(s"${upgradedCardDesk.cards.size}")
+    println(s"CardDesk size ${upgradedCardDesk.cards.size}") //There Print size of CardDesk
+    println(s"All Card ${upgradedCardDesk.cards}")
 
     if (upgradedCardDesk.cards.size < roundEnd.attacker.needCard * 2) bothOpenCard(roundEnd.attacker, roundEnd.defender)
     else
       (roundEnd.attacker, roundEnd.defender) match { //Todo need this fix, in Game().play should go roundEnd.attacker and roundEnd.defender
         case (human: Human, robot: Robot) =>
+          println(s"Human point ${human.getTricksPoints}")//Todo need delete this !
           Game().play(
-            Robot(points = robot.points, attack = false).setHand(roundEnd.defender.hand),
-            Human(name = human.name, points = human.points, attack = true).setHand(roundEnd.attacker.hand),
+            Robot(points = robot.points, tricks = robot.tricks, hiddenTricks = robot.hiddenTricks, attack = false).setHand(roundEnd.defender.hand),
+            Human(name = human.name, points = human.points, tricks = human.tricks, hiddenTricks = human.hiddenTricks, attack = true).setHand(roundEnd.attacker.hand),
             roundEnd.cardDesk
           )
         case (robot: Robot, human: Human) =>
           Game().play(
-            Robot(points = robot.points, tricks = robot.tricks).setHand(roundEnd.attacker.hand),
-            Human(name = human.name, points = human.points, tricks = human.tricks).setHand(roundEnd.defender.hand),
+            Robot(points = robot.points, tricks = robot.tricks, hiddenTricks = robot.hiddenTricks).setHand(roundEnd.attacker.hand),
+            Human(name = human.name, points = human.points, tricks = human.tricks, hiddenTricks = human.hiddenTricks).setHand(roundEnd.defender.hand),
             roundEnd.cardDesk
           )
       }

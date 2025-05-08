@@ -24,14 +24,14 @@ case class Human(
   attack: Boolean = false
 ) extends Player {
 
-  def setHand(listCard: List[Card]): Human = Human(name, hand ++ listCard, attack = this.attack)
+  def setHand(listCard: List[Card]): Human = Human(name, hand ++ listCard,points = this.points, tricks = this.tricks, hiddenTricks = this.hiddenTricks, attack = this.attack)
 
   def setPoints(amount: Int): Human = Human(name, hand, points + amount)
 
 }
 
 case class Robot(
-  name:String = "Robot",
+  name: String = "Robot",
   hand: List[Card] = List.empty[Card],
   points: Int = 0,
   tricks: List[Card] = List.empty,
@@ -39,7 +39,7 @@ case class Robot(
   attack: Boolean = true
 ) extends Player {
 
-  def setHand(cards: List[Card]): Robot = Robot(name, hand ++ cards, attack = this.attack)
+  def setHand(cards: List[Card]): Robot = Robot(name, hand ++ cards, points = this.points,tricks = this.tricks,hiddenTricks = this.hiddenTricks, attack = this.attack)
 
   def setAttack(itAttack: Boolean): Robot = Robot(name, hand, points, tricks, hiddenTricks, itAttack)
 
